@@ -1,298 +1,216 @@
-AIME - AI Mental Emotion Recognition System
-<div align="center">
+# 🧠 AIME – AI Mental Emotion Recognition System
 
+> A real-time AI-powered platform for detecting human emotions using voice and facial expressions.
 
+![AIME Banner](assets/banner.png)
 
+## 🚀 Overview
 
+AIME (AI Mental Emotion Recognition System) is a deep learning project that recognizes emotions from both audio and video inputs.
 
+The system uses trained AI models to analyze speech and facial expressions, predict emotions in real time, and provide meaningful insights through an interactive web dashboard.
 
+### Supported Emotions
 
+**Audio**
 
+* Angry
+* Disgust
+* Fear
+* Happy
+* Neutral
+* Sad
 
+**Video**
 
-🎭 Real-Time Audio & Video Emotion Recognition using Deep Learning
-</div>
-📖 Overview
+* Neutral
+* Calm
+* Happy
+* Sad
+* Angry
+* Fear
+* Disgust
+* Surprise
 
-AIME (AI Mental Emotion Recognition System) is a deep learning-powered platform that detects human emotions using both voice and facial expressions.
+---
 
-The system analyzes audio and video inputs in real time, predicts emotions, provides confidence scores, and delivers emotion-based recommendations.
+## ✨ Features
 
-AIME combines:
+* 🎤 Audio Emotion Recognition
+* 🎥 Real-Time Video Emotion Recognition
+* 📊 Analytics Dashboard
+* 📈 Confusion Matrix & Performance Analysis
+* 🎯 Confidence Score Prediction
+* 💡 Emotion-Based Recommendations
+* 🌐 Flask Web Application
+* 📱 Responsive Dashboard UI
 
-🎤 Audio Emotion Recognition
-🎥 Video Emotion Recognition
-📊 Analytics Dashboard
-🧠 Emotion Insights
-🌐 Web-Based Interface
-🎯 Problem Statement
+---
 
-Mental and emotional states are often difficult to identify in real time.
+## 🏗️ Architecture
 
-AIME aims to provide an intelligent system capable of automatically detecting emotions through speech and facial expressions using Artificial Intelligence and Deep Learning.
+Input (Audio / Video)
 
-✨ Key Features
-🎤 Audio Emotion Recognition
-Upload audio files
-Live microphone support
-Emotion prediction
-Confidence score visualization
-Supported Emotions
-Happy 😊
-Sad 😔
-Angry 😠
-Fear 😨
-Neutral 😐
-Disgust 🤢
-🎥 Video Emotion Recognition
-Real-time webcam detection
-Facial emotion classification
-Confidence score display
-Live prediction system
-Supported Emotions
-Neutral 😐
-Calm 😌
-Happy 😊
-Sad 😔
-Angry 😠
-Fear 😨
-Disgust 🤢
-Surprise 😲
-📊 Analytics Dashboard
-Confusion Matrix
-Classification Report
-Accuracy Curves
-Loss Curves
-ROC-AUC Curves
-Class Distribution Analysis
-💡 Emotion-Based Recommendations
+↓
 
-The system provides intelligent suggestions based on detected emotions.
-
-Examples:
-
-Emotion	Suggestion
-Sad	Talk to a friend or family member
-Angry	Practice deep breathing exercises
-Fear	Try grounding techniques
-Happy	Keep doing activities you enjoy
-Neutral	Maintain a healthy routine
-🏗️ System Architecture
-User Input
-     │
-     ▼
-Audio / Video Acquisition
-     │
-     ▼
 Feature Extraction
-     │
-     ├── MFCC
-     ├── Log-Mel Spectrogram
-     └── Facial Features
-     │
-     ▼
+
+↓
+
 Deep Learning Models
-     │
-     ▼
+
+↓
+
 Emotion Prediction
-     │
-     ▼
+
+↓
+
 Confidence Score
-     │
-     ▼
-Recommendations & Insights
-🧠 Deep Learning Models
-Audio Model
-Dataset
 
-CREMA-D Dataset
+↓
 
-Feature Extraction
-MFCC
-Log-Mel Spectrograms
-Architecture
-Input
- │
-Conv2D
- │
-BatchNormalization
- │
-MaxPooling
- │
-Dropout
- │
-Dense Layers
- │
-Softmax
-Video Model
-Dataset
+Insights & Recommendations
 
-RAVDESS Dataset
+---
 
-Architecture
-MobileNetV2
-      │
-Global Average Pooling
-      │
-Dense Layer
-      │
-Softmax
-Why MobileNetV2?
-Lightweight
-Fast inference
-High accuracy
-Suitable for real-time applications
-📂 Dataset Information
-🎤 CREMA-D
+## 🧠 Models Used
 
-Used for Audio Emotion Recognition.
+### Audio Emotion Recognition
 
-Contains:
+* CNN-Based Deep Learning Model
+* MFCC & Log-Mel Features
+* Dataset: CREMA-D
 
-7,000+ audio samples
-Multiple speakers
-Various emotional expressions
-🎥 RAVDESS
+### Video Emotion Recognition
 
-Used for Video Emotion Recognition.
+* MobileNetV2
+* Transfer Learning
+* Dataset: RAVDESS
 
-Contains:
+---
 
-Facial emotion videos
-Speech-based emotional expressions
-Multiple emotion categories
-📈 Model Evaluation
+## 🛠️ Tech Stack
 
-The models were evaluated using:
+**Languages**
 
-Accuracy
-Precision
-Recall
-F1-Score
-ROC-AUC
-Confusion Matrix
-📸 Project Screenshots
-Dashboard
+* Python
 
-Add dashboard screenshot here
+**AI / Deep Learning**
 
-![Dashboard](assets/dashboard.png)
-Audio Emotion Detection
+* TensorFlow
+* Keras
 
-Add screenshot here
+**Computer Vision**
 
-![Audio Detection](assets/audio_ui.png)
-Video Emotion Detection
+* OpenCV
+* MTCNN
 
-Add screenshot here
+**Audio Processing**
 
-![Video Detection](assets/video_ui.png)
-Analytics Dashboard
+* Librosa
+* SoundFile
 
-Add screenshot here
+**Backend**
 
-![Analytics](assets/analytics.png)
-🛠️ Tech Stack
-Programming Language
-Python 3.10
-Deep Learning
-TensorFlow
-Keras
-Audio Processing
-Librosa
-SoundFile
-PyAudio
-Computer Vision
-OpenCV
-MTCNN
-Web Development
-Flask
-HTML
-CSS
-JavaScript
-Data Analysis
-Pandas
-NumPy
-Scikit-Learn
-Visualization
-Matplotlib
-Seaborn
-📁 Project Structure
-PROJECT
-│
-├── assets/
-├── data/
-├── dataset/
-│   ├── CREMA-D/
-│   └── RAVDESS/
+* Flask
+
+**Frontend**
+
+* HTML
+* CSS
+* JavaScript
+
+**Visualization**
+
+* Matplotlib
+* Seaborn
+
+---
+
+## 📂 Project Structure
+
+```bash
+PROJECT/
 │
 ├── models/
-│   ├── audio_emotion_model.h5
-│   ├── video_emotion_model.h5
-│   └── audio_classes.npy
-│
+├── dataset/
+├── assets/
 ├── src/
-│   ├── train_audio.py
-│   ├── train_video.py
-│   ├── predict_audio.py
-│   ├── predict_video.py
-│   ├── live_audio_emotion.py
-│   ├── live_video_emotion.py
-│   ├── evaluate_audio.py
-│   └── evaluate_video.py
-│
 ├── webapp/
-│
-├── requirements.txt
-│
-└── README.md
-🚀 Installation
-git clone https://github.com/yourusername/AIME.git
+└── requirements.txt
+```
 
-cd AIME
+---
 
-Create Virtual Environment
+## ⚙️ Installation
+
+```bash
+git clone <repository-url>
+
+cd PROJECT
 
 python -m venv venv
 
-Activate
-
 venv\Scripts\activate
 
-Install Dependencies
-
 pip install -r requirements.txt
-▶️ Run Project
-Audio Recognition
+```
+
+---
+
+## ▶️ Run
+
+### Audio
+
+```bash
 python src/live_audio_emotion.py
-Video Recognition
+```
+
+### Video
+
+```bash
 python src/live_video_emotion.py
-Flask Web Application
+```
+
+### Web Application
+
+```bash
 cd webapp
 
 python app.py
-🔮 Future Scope
-🤖 AI Mental Health Chatbot
-📞 Tele-MANAS Integration
-🗺️ Therapist Finder
-📅 Appointment Booking
-📊 Emotion History Tracking
-☁️ Cloud Deployment
-📱 Mobile Application
-👨‍💻 Author
+```
 
-Bhavik Ratnottar
+---
+
+## 📊 Evaluation
+
+The models are evaluated using:
+
+* Accuracy
+* Precision
+* Recall
+* F1 Score
+* Confusion Matrix
+* ROC Curve
+* Class Distribution Analysis
+
+---
+
+## 🔮 Future Enhancements
+
+* AI Mental Health Companion
+* Tele-MANAS Integration
+* Therapist Finder
+* Emotion History Tracking
+* Appointment Booking System
+* Mobile Application
+
+---
+
+## 👨‍💻 Author
+
+**Bhavik Ratnottar**
 
 B.Tech Information Technology
 
-AI • Machine Learning • Deep Learning • Full Stack Development
-
-⭐ Support
-
-If you found this project useful:
-
-⭐ Star the repository
-
-🍴 Fork the project
-
-📢 Share with others
+AI • Machine Learning • Deep Learning
