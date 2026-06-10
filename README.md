@@ -2,7 +2,6 @@
 
 > A real-time AI-powered platform for detecting human emotions using voice and facial expressions.
 
-![AIME Banner](assets/banner.png)
 
 ## 🚀 Overview
 
