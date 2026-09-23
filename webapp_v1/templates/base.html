@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AIME – AI that understands the real you</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="sb">
+  <div class="sb-brand">
+    <div class="sb-logo">🧠</div>
+    <div>
+      <div class="sb-title">AIME</div>
+      <div class="sb-tag">AI for Mood &amp; Emotions</div>
+    </div>
+  </div>
+
+  <span class="nb">Main</span>
+  <a href="/"          class="{% if request.path=='/' %}on{% endif %}"><span class="ni">⊞</span><span>Dashboard</span></a>
+  <a href="/video"     class="{% if request.path=='/video' %}on{% endif %}"><span class="ni">📹</span><span>Video Detection</span></a>
+  <a href="/audio"     class="{% if request.path=='/audio' %}on{% endif %}"><span class="ni">🎧</span><span>Audio Detection</span></a>
+  <a href="/analytics" class="{% if request.path=='/analytics' %}on{% endif %}"><span class="ni">📊</span><span>Analytics</span></a>
+  <a href="/about"     class="{% if request.path=='/about' %}on{% endif %}"><span class="ni">ℹ</span><span>About AIME</span></a>
+
+  <!-- <div class="sb-foot">
+    CREMA-D · RAVDESS<br>
+    CNN+BiLSTM · MobileNetV2<br>
+    B.Tech IT · Sem 6
+  </div> -->
+</nav>
+
+<main class="main">
+  {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>

@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="ph">
+  <h1>Video Emotion Detection</h1>
+  <p>Live webcam stream <strong>or</strong> upload a video file — MobileNetV2 face detection model</p>
+</div>
+
+<div class="g2" style="margin-bottom:18px;">
+
+  <!-- ── LIVE CAMERA ── -->
+  <div>
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:14px;">
+      <div style="padding:14px 18px;border-bottom:1px solid var(--bdr);">
+        <div class="cl" style="margin-bottom:0;">Live Webcam Stream</div>
+      </div>
+      <div class="vw" id="vw">
+        <div class="vph" id="vph">
+          <span>📷</span><span>Press Start Camera to begin</span>
+          <span style="font-size:11px;color:var(--txt3);font-family:var(--M);">Records ~12 seconds then shows result</span>
+        </div>
+        <img id="vfeed" src="" alt="" style="display:none;width:100%;">
+        <div class="vov" id="vov" style="display:none;">
+          <div class="live"><span class="ldot"></span>LIVE</div>
+          <div id="ovEmo" style="font-size:15px;font-weight:700;margin-top:5px;text-transform:capitalize;color:var(--acc);">—</div>
+          <div id="ovConf" style="font-size:10.5px;color:var(--txt3);font-family:var(--M);"></div>
+        </div>
+      </div>
+      <div style="padding:12px 18px;border-top:1px solid var(--bdr);">
+        <!-- countdown bar -->
+        <div style="margin-bottom:10px;">
+          <div class="br-hd"><span id="liveLabel">Ready</span><span id="livePct"></span></div>
+          <div class="br-bg"><div class="br-fl" id="liveBar" style="width:0%;"></div></div>
+        </div>
+        <div class="bgrp">
+          <button class="btn btn-s" id="startCamBtn" onclick="startCam()">📹 Start Camera</button>
+          <button class="btn btn-r"  id="stopCamBtn"  onclick="stopCam()" disabled>⏹ Stop</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live result card -->
+    <div class="card" id="liveResult" style="display:none;">
+      <div class="cl">Live Detection</div>
+      <div class="rbox">
+        <div class="r-emo" id="liveEmoji">😐</div>
+        <div>
+          <div class="r-lb">Current Emotion</div>
+          <div class="r-nm" id="liveEmo">—</div>
+          <div class="r-cf">Confidence: <strong id="liveConf">0</strong>%</div>
+        </div>
+      </div>
+      <div class="tip-wrap" id="liveTips" style="margin-top:12px;"></div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL ── -->
+  <div style="display:flex;flex-direction:column;gap:14px;">
+
+    <!-- Upload video file -->
+    <div class="card">
+      <div class="cl">Upload Video File</div>
+      <div class="dz" id="vdz" onclick="document.getElementById('vf').click()">
+        <input type="file" id="vf" accept="video/*,.mp4,.avi" onchange="onVFile(this)">
+        <div class="dz-ic">🎬</div>
+        <div class="dz-tx">Click or drag a video file</div>
+        <div class="dz-sb">.mp4 · .avi · face must be visible</div>
+      </div>
+      <div id="vfn" style="font-size:11.5px;color:var(--txt3);font-family:var(--M);margin:8px 0 10px;min-height:18px;"></div>
+      <button class="btn btn-s" onclick="analyzeVideo()">🔍 Analyze Video</button>
+    </div>
+
+    <!-- Video result -->
+    <div id="vResultSection" style="display:none;">
+      <div class="card">
+        <div class="cl">Video Analysis Result</div>
+        <div id="vLd" class="ld" style="display:none;"><div class="spin"></div><span>Analyzing video frames...</span></div>
+        <div id="vResContent" style="display:none;">
+          <div class="rbox" style="margin-bottom:12px;">
+            <div class="r-emo" id="vEmoji">😐</div>
+            <div>
+              <div class="r-lb">Dominant Emotion</div>
+              <div class="r-nm" id="vEmo">—</div>
+              <div class="r-cf">Confidence: <strong id="vConf">0</strong>%</div>
+            </div>
+          </div>
+          <div class="tip-wrap" id="vTips"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="card">
+      <div class="cl">Best Results</div>
+      <ul style="list-style:none;font-size:13px;color:var(--txt2);display:flex;flex-direction:column;gap:7px;margin-top:4px;">
+        <li>✅ Face camera directly — frontal face works best</li>
+        <li>✅ Good lighting on your face</li>
+        <li>✅ Stay 40–80 cm from camera</li>
+        <li>✅ Wait 2–3 seconds before recording for detection to stabilise</li>
+        <li>❌ No sunglasses or face coverings</li>
+        <li>❌ Avoid very dark environments</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let pollInt=null, camSecs=0, camTick=null;
+const CAM_DUR=12;
+
+const emojis={neutral:"😐",calm:"😌",happy:"😊",sad:"😢",angry:"😠",fear:"😨",disgust:"🤢",surprise:"😲"};
+
+// ── LIVE CAM ──
+function startCam(){
+  document.getElementById('vph').style.display='none';
+  const img=document.getElementById('vfeed');
+  img.style.display='block';
+  img.src='/video_feed';
+  document.getElementById('vov').style.display='block';
+  document.getElementById('liveResult').style.display='block';
+  document.getElementById('startCamBtn').disabled=true;
+  document.getElementById('stopCamBtn').disabled=false;
+
+  camSecs=0;
+  document.getElementById('liveLabel').textContent='Recording...';
+  camTick=setInterval(()=>{
+    camSecs++;
+    const pct=Math.min(100,(camSecs/CAM_DUR)*100);
+    document.getElementById('liveBar').style.width=pct+'%';
+    document.getElementById('livePct').textContent=camSecs+' / '+CAM_DUR+'s';
+    if(camSecs>=CAM_DUR){
+      document.getElementById('liveLabel').textContent='Analysis complete ✅';
+    }
+  },1000);
+
+  pollInt=setInterval(fetchLive,2000);
+}
+
+function stopCam(){
+  document.getElementById('vfeed').src='';
+  document.getElementById('vfeed').style.display='none';
+  document.getElementById('vph').style.display='flex';
+  document.getElementById('vov').style.display='none';
+  document.getElementById('startCamBtn').disabled=false;
+  document.getElementById('stopCamBtn').disabled=true;
+  document.getElementById('liveLabel').textContent='Stopped';
+  document.getElementById('livePct').textContent='';
+  clearInterval(pollInt);
+  clearInterval(camTick);
+}
+
+function fetchLive(){
+  fetch('/video/live_emotion')
+    .then(r=>r.json())
+    .then(d=>{
+      document.getElementById('liveEmoji').textContent=d.emoji;
+      document.getElementById('liveEmo').textContent=d.emotion;
+      document.getElementById('liveConf').textContent=d.confidence.toFixed(1);
+      document.getElementById('ovEmo').textContent=d.emoji+' '+d.emotion;
+      document.getElementById('ovConf').textContent=d.confidence.toFixed(0)+'%';
+      const tc=document.getElementById('liveTips');
+      tc.innerHTML='';
+      (d.suggestions||[]).slice(0,3).forEach((s,i)=>{
+        tc.innerHTML+=`<div class="tip"><div class="tip-n">${i+1}</div><div class="tip-t">${s}</div></div>`;
+      });
+    }).catch(()=>{});
+}
+
+// ── VIDEO UPLOAD ──
+const vdz=document.getElementById('vdz');
+vdz.addEventListener('dragover',e=>{e.preventDefault();vdz.classList.add('over');});
+vdz.addEventListener('dragleave',()=>vdz.classList.remove('over'));
+vdz.addEventListener('drop',e=>{
+  e.preventDefault();vdz.classList.remove('over');
+  const f=e.dataTransfer.files[0];
+  if(f){const dt=new DataTransfer();dt.items.add(f);document.getElementById('vf').files=dt.files;onVFile({files:[f]});}
+});
+function onVFile(inp){if(inp.files[0]) document.getElementById('vfn').textContent='📎 '+inp.files[0].name;}
+
+function analyzeVideo(){
+  const f=document.getElementById('vf').files[0];
+  if(!f){alert('Please select a video file first.');return;}
+  const fd=new FormData();
+  fd.append('file',f);
+
+  document.getElementById('vResultSection').style.display='block';
+  document.getElementById('vLd').style.display='flex';
+  document.getElementById('vResContent').style.display='none';
+
+  fetch('/video/predict',{method:'POST',body:fd})
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.error){alert('Error: '+d.error);return;}
+      document.getElementById('vLd').style.display='none';
+      document.getElementById('vResContent').style.display='block';
+      document.getElementById('vEmoji').textContent=d.emoji;
+      document.getElementById('vEmo').textContent=d.emotion;
+      document.getElementById('vConf').textContent=d.confidence.toFixed(1);
+      const tc=document.getElementById('vTips');
+      tc.innerHTML='';
+      (d.suggestions||[]).forEach((s,i)=>{
+        tc.innerHTML+=`<div class="tip"><div class="tip-n">${i+1}</div><div class="tip-t">${s}</div></div>`;
+      });
+    })
+    .catch(e=>alert('Failed: '+e));
+}
+</script>
+
+{% endblock %}

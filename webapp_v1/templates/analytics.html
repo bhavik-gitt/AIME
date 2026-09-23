@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="ph">
+  <h1>Model Analytics</h1>
+  <p>Training metrics, confusion matrices and accuracy curves for both models</p>
+</div>
+
+<div class="g4" style="margin-bottom:18px;">
+  <div class="st"><div class="st-ic">🎵</div><div class="st-lb">Audio Classes</div><div class="st-vl">6</div><div class="st-sb">CREMA-D emotions</div></div>
+  <div class="st"><div class="st-ic">📹</div><div class="st-lb">Video Classes</div><div class="st-vl">8</div><div class="st-sb">RAVDESS emotions</div></div>
+  <div class="st"><div class="st-ic">🧠</div><div class="st-lb">Audio Arch</div><div class="st-vl" style="font-size:15px;">CNN+BiLSTM</div><div class="st-sb">MFCC features</div></div>
+  <div class="st"><div class="st-ic">📡</div><div class="st-lb">Video Arch</div><div class="st-vl" style="font-size:15px;">MobileNetV2</div><div class="st-sb">Transfer learning</div></div>
+</div>
+
+<div class="g2" style="margin-bottom:18px;">
+  <div class="card">
+    <div class="cl">🎵 Audio — Confusion Matrix</div>
+    <img class="aim" src="/static/assets/audio_confusion_matrix.png" alt="Audio Confusion Matrix"
+         onerror="this.style.opacity=.15;this.alt='Add image: static/assets/audio_confusion_matrix.png';">
+  </div>
+  <div class="card">
+    <div class="cl">🎵 Audio — Accuracy &amp; Loss Curve</div>
+    <img class="aim" src="/static/assets/audio_accuracy.png" alt="Audio Accuracy"
+         onerror="this.style.opacity=.15;">
+  </div>
+  <div class="card">
+    <div class="cl">📹 Video — Confusion Matrix</div>
+    <img class="aim" src="/static/assets/video_confusion_matrix.png" alt="Video Confusion Matrix"
+         onerror="this.style.opacity=.15;">
+  </div>
+  <div class="card">
+    <div class="cl">📹 Video — Accuracy &amp; Loss Curve</div>
+    <img class="aim" src="/static/assets/video_accuracy.png" alt="Video Accuracy"
+         onerror="this.style.opacity=.15;">
+  </div>
+</div>
+
+<div class="card">
+  <div class="cl">Reading Guide</div>
+  <div class="g3" style="margin-top:10px;">
+    <div>
+      <div style="font-size:12.5px;font-weight:600;color:var(--acc);margin-bottom:5px;">Confusion Matrix</div>
+      <div style="font-size:12.5px;color:var(--txt2);line-height:1.65;">Rows = actual emotions, Columns = predicted. Diagonal = correct. Off-diagonal = misclassifications. Brighter diagonal = better model.</div>
+    </div>
+    <div>
+      <div style="font-size:12.5px;font-weight:600;color:var(--acc);margin-bottom:5px;">Accuracy Curve</div>
+      <div style="font-size:12.5px;color:var(--txt2);line-height:1.65;">Blue = training, orange = validation. Gap = overfitting. Flat at end = converged. EarlyStopping prevents over-training.</div>
+    </div>
+    <div>
+      <div style="font-size:12.5px;font-weight:600;color:var(--acc);margin-bottom:5px;">Image Setup</div>
+      <div style="font-size:12.5px;color:var(--txt2);line-height:1.65;">Place PNG files in <code style="font-family:var(--M);font-size:10.5px;color:var(--amber);background:rgba(251,191,36,.08);padding:1px 5px;border-radius:4px;">webapp/static/assets/</code> folder with exact names shown above.</div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

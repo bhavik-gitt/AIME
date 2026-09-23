@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="ph">
+  <h1>About AIME</h1>
+  <p style="color:var(--acc);font-style:italic;">"AI that understands the real you"</p>
+</div>
+
+<div class="g2" style="margin-bottom:18px;">
+
+  <div style="display:flex;flex-direction:column;gap:16px;">
+
+    <div class="card" style="background:linear-gradient(135deg,var(--surf) 0%,var(--surf2) 100%);">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+        <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 0 22px rgba(96,165,250,.4);">🧠</div>
+        <div>
+          <div style="font-size:20px;font-weight:700;letter-spacing:-.3px;">AIME</div>
+          <div style="font-size:12px;color:var(--txt2);">Artificial Intelligence for Mood and Emotions</div>
+          <div style="font-size:11px;color:var(--acc);margin-top:2px;font-style:italic;">"AI that understands the real you"</div>
+        </div>
+      </div>
+      <p style="font-size:13.5px;color:var(--txt2);line-height:1.75;">
+        AIME is a multimodal emotion recognition system built as a B.Tech IT Semester 6 final year project. It uses state-of-the-art deep learning to detect and understand human emotions from both audio and video inputs, providing personalised wellness suggestions and paving the way for AI-driven mental health support.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="cl">Datasets Used</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <span class="tag tb" style="flex-shrink:0;">CREMA-D</span>
+          <div>
+            <div style="font-size:13px;color:var(--txt);font-weight:500;">Crowd-sourced Emotional Multimodal Actors Dataset</div>
+            <div style="font-size:12px;color:var(--txt2);">7,442 audio clips · 91 actors · 6 emotions · WAV format · Used for audio model</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <span class="tag tp" style="flex-shrink:0;">RAVDESS</span>
+          <div>
+            <div style="font-size:13px;color:var(--txt);font-weight:500;">Ryerson Audio-Visual Database of Emotional Speech and Song</div>
+            <div style="font-size:12px;color:var(--txt2);">24 professional actors · 8 emotions · Video + Audio · MP4 format · Used for video model</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cl">Models &amp; Architecture</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="font-size:13.5px;font-weight:600;color:var(--acc);">🎵 Audio — CNN + BiLSTM</span>
+            <span class="tag tb" style="font-size:9px;">CREMA-D</span>
+          </div>
+          <div style="font-size:12.5px;color:var(--txt2);line-height:1.6;">
+            Feature extraction via MFCC (n=40 coefficients) → 2× Conv2D blocks with BatchNorm → Bidirectional LSTM(64) → Dense(128) + Dropout → Softmax · 6 emotion classes · Trained 30 epochs
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--bdr);padding-top:12px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="font-size:13.5px;font-weight:600;color:var(--acc);">📹 Video — MobileNetV2</span>
+            <span class="tag tp" style="font-size:9px;">RAVDESS</span>
+          </div>
+          <div style="font-size:12.5px;color:var(--txt2);line-height:1.6;">
+            Transfer learning on MobileNetV2 → Haar Cascade frontal face detection → Real-time MJPEG streaming at 160×160 → Softmax · 8 emotion classes · Frame-by-frame inference
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:16px;">
+
+    <div class="card">
+      <div class="cl">Tech Stack</div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:4px;">
+        <span class="tag tb">Python 3.10</span>
+        <span class="tag tb">TensorFlow 2.x</span>
+        <span class="tag tb">Keras</span>
+        <span class="tag tg">OpenCV</span>
+        <span class="tag tg">Librosa</span>
+        <span class="tag tp">Flask</span>
+        <span class="tag ta">NumPy</span>
+        <span class="tag ta">Scikit-learn</span>
+        <span class="tag tt">SciPy</span>
+        <span class="tag tt">Pandas</span>
+      </div>
+    </div>
+
+    <!-- <div class="card">
+      <div class="cl">System Architecture</div>
+      <div class="tree">
+        <div><span class="d">AIME/</span></div>
+        <div>&nbsp;&nbsp;├─ <span class="d">webapp/</span></div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;├─ app.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c"># Flask routes &amp; API</span></div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;├─ <span class="d">utils/</span></div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;├─ audio_utils.py &nbsp;<span class="c"># MFCC + CNN+BiLSTM</span></div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;├─ video_utils.py &nbsp;<span class="c"># Face detect + stream</span></div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;└─ recommendations.py <span class="c"># 1000+ tips</span></div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;├─ <span class="d">templates/</span> &nbsp;&nbsp;&nbsp;&nbsp;<span class="c"># Jinja2 HTML pages</span></div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;└─ <span class="d">static/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c"># CSS / JS / assets</span></div>
+        <div>&nbsp;&nbsp;├─ <span class="d">models/</span></div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;├─ audio_emotion_model.h5</div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;└─ video_emotion_model.h5</div>
+        <div>&nbsp;&nbsp;└─ <span class="d">dataset/</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ CREMA-D/AudioWAV/</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ RAVDESS dataset/</div>
+      </div>
+    </div> -->
+
+    <div class="card">
+      <div class="cl">Project Timeline</div>
+      <div class="tl">
+        <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-hd">Dataset Collection</div><div class="tl-sb">CREMA-D audio + RAVDESS video datasets acquired and preprocessed</div></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-hd">Audio Model Training</div><div class="tl-sb">CNN+BiLSTM trained on MFCC features — CREMA-D · 6 emotions</div></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-hd">Video Model Training</div><div class="tl-sb">MobileNetV2 transfer learning — RAVDESS · 8 emotions · real-time</div></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-hd">Web Application</div><div class="tl-sb">Flask webapp with live streaming, file upload, mic recording, suggestions</div></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Future Work -->
+<div class="card" style="margin-bottom:18px;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <div class="cl" style="margin-bottom:0;">Future Work &amp; Planned Features</div>
+    <span class="future">🚀 Roadmap</span>
+  </div>
+  <div class="g3">
+    {% set fw=[
+      ('⭐','Tele-MANAS Integration','One-tap call to 14416 · Chat option · Call history and transcripts · India mental health helpline integration'),
+      ('🤖','AI Chat Companion','Empathetic AI using OpenAI API · Emotional support · Coping strategies · Distress detection · Available 24/7'),
+      ('📅','Appointment Booking','Find therapists nearby · Book appointments · Video call integration'),
+      ('🗺','Therapist Finder','Google Maps API · Search by location · Filter by specialisation · Show on map'),
+      ('🔀','Multimodal Fusion','Combine audio + video predictions simultaneously for significantly higher accuracy'),
+      ('📱','Mobile App','Android/iOS app · Push notifications · Daily mood tracking · Mood history graphs'),
+      ('📈','Advanced Analytics','Emotion trend graphs over time · Weekly mood reports · Personalised insights'),
+      ('🔐','User Accounts','Secure login · Personal mood history · Progress tracking · Privacy-first design'),
+    ]%}
+    {% for ic,t,d in fw %}
+    <div style="background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--rsm);padding:14px;">
+      <div style="font-size:20px;margin-bottom:6px;">{{ic}}</div>
+      <div style="font-size:13px;font-weight:600;color:var(--txt);margin-bottom:4px;">{{t}}</div>
+      <div style="font-size:12px;color:var(--txt2);line-height:1.55;">{{d}}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Tele-MANAS highlight -->
+<div class="card" style="background:linear-gradient(135deg,rgba(96,165,250,.06),rgba(192,132,252,.06));border-color:rgba(96,165,250,.25);">
+  <div style="display:flex;align-items:center;gap:14px;">
+    <div style="font-size:36px;">⭐</div>
+    <div>
+      <div style="font-size:15px;font-weight:700;color:var(--acc);margin-bottom:4px;">Tele-MANAS — National Mental Health Helpline</div>
+      <div style="font-size:13px;color:var(--txt2);line-height:1.6;">
+        Planned integration with India's national mental health helpline <strong style="color:var(--acc);">14416</strong>. AIME will detect emotional distress and offer one-tap access to professional mental health support, making real help just one click away.
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

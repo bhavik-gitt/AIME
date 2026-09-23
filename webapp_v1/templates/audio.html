@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="ph">
+  <h1>Audio Emotion Detection</h1>
+  <p>Upload a .wav file <strong>or</strong> record from microphone — Log-Mel Spectrogram · CNN+BiLSTM model</p>
+</div>
+
+<div class="g2" style="margin-bottom:18px;">
+
+  <!-- ── UPLOAD ── -->
+  <div class="card">
+    <div class="cl">Upload Audio File</div>
+    <div class="dz" id="dz">
+      <input type="file" id="af" accept=".wav,audio/*" onchange="onFileChosen(this)">
+      <div class="dz-ic">🎵</div>
+      <div class="dz-tx">Click or drag &amp; drop a .wav file</div>
+      <div class="dz-sb">Supported: .wav · max 10 MB</div>
+    </div>
+    <div id="fn" style="font-size:11.5px;color:var(--txt3);font-family:var(--M);margin:8px 0 12px;min-height:18px;"></div>
+    <div class="bgrp">
+      <button class="btn btn-s" onclick="analyzeFile()">⚡ Analyze File</button>
+    </div>
+  </div>
+
+  <!-- ── MIC ── -->
+  <div class="card">
+    <div class="cl">Live Microphone Recording</div>
+    <p style="font-size:13px;color:var(--txt2);margin-bottom:14px;line-height:1.6;">
+      Auto-stops at <strong style="color:var(--acc);">15 seconds</strong>. Speak naturally — express how you feel.
+    </p>
+
+    <div class="timer" id="timer">00:00</div>
+
+    <div style="margin-bottom:14px;">
+      <div class="br-hd"><span id="recLabel">Ready to record</span><span id="recPct"></span></div>
+      <div class="br-bg"><div class="br-fl" id="recBar" style="width:0%;background:linear-gradient(90deg,var(--red),var(--amber));"></div></div>
+    </div>
+
+    <div class="bgrp">
+      <button class="btn btn-g" id="startBtn" onclick="startRec()">🎙 Start Recording</button>
+      <button class="btn btn-r"  id="stopBtn"  onclick="stopRec()" disabled>⏹ Stop Early &amp; Analyze</button>
+    </div>
+    <div id="recStatus" style="font-size:11.5px;color:var(--txt3);font-family:var(--M);margin-top:10px;">Click Start to begin</div>
+  </div>
+
+</div>
+
+<!-- ── RESULT ── -->
+<div id="resultSection" style="display:none;">
+  <div class="card">
+    <div class="cl">Detection Result</div>
+
+    <div id="ldState" class="ld" style="display:none;">
+      <div class="spin"></div><span>Analyzing with Log-Mel + CNN+BiLSTM model...</span>
+    </div>
+
+    <div id="resContent" style="display:none;">
+      <div class="g2" style="gap:18px;align-items:start;">
+
+        <!-- Left: emotion + ring -->
+        <div>
+          <div class="rbox" style="margin-bottom:16px;">
+            <div class="r-emo" id="rEmoji">😐</div>
+            <div>
+              <div class="r-lb">Detected Emotion</div>
+              <div class="r-nm" id="rEmo">—</div>
+              <div class="r-cf">Confidence: <strong id="rConf">0</strong>%</div>
+            </div>
+          </div>
+
+          <!-- Confidence ring -->
+          <div class="ring-wrap" style="margin:8px 0 16px;">
+            <svg width="110" height="110" class="ring">
+              <defs>
+                <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#60a5fa"/>
+                  <stop offset="100%" stop-color="#c084fc"/>
+                </linearGradient>
+              </defs>
+              <circle class="ring-bg" cx="55" cy="55" r="46"/>
+              <circle class="ring-fill" id="ringFill" cx="55" cy="55" r="46"
+                      stroke-dasharray="289" stroke-dashoffset="289"/>
+            </svg>
+            <div class="ring-pct" id="ringPct">0%</div>
+            <div class="ring-lbl">Confidence</div>
+          </div>
+
+          <!-- Emotion model info -->
+          <div style="background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--rsm);padding:10px 12px;">
+            <div style="font-size:10px;font-family:var(--M);color:var(--txt3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px;">Model Info</div>
+            <div style="font-size:12px;color:var(--txt2);">Feature: Log-Mel Spectrogram (64×128)</div>
+            <div style="font-size:12px;color:var(--txt2);">Arch: CNN + BiLSTM</div>
+            <div style="font-size:12px;color:var(--txt2);">Dataset: CREMA-D · 6 classes</div>
+          </div>
+        </div>
+
+        <!-- Right: suggestions -->
+        <div>
+          <div class="cl">Personalised Suggestions</div>
+          <div class="tip-wrap" id="tips"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let recorder, chunks=[], tickInt, secs=0;
+const MAX_SEC = 15;
+
+// ── Drag & drop ──
+const dz = document.getElementById('dz');
+dz.addEventListener('click', () => document.getElementById('af').click());
+dz.addEventListener('dragover', e=>{e.preventDefault();dz.classList.add('over');});
+dz.addEventListener('dragleave', ()=>dz.classList.remove('over'));
+dz.addEventListener('drop', e=>{
+  e.preventDefault(); dz.classList.remove('over');
+  const f = e.dataTransfer.files[0];
+  if(f){ patchInput(f); setFN(f.name); }
+});
+
+function patchInput(file){
+  const dt = new DataTransfer(); dt.items.add(file);
+  document.getElementById('af').files = dt.files;
+}
+function onFileChosen(inp){ if(inp.files[0]) setFN(inp.files[0].name); }
+function setFN(n){ document.getElementById('fn').textContent = '📎 ' + n; }
+
+// ── File upload ──
+function analyzeFile(){
+  const f = document.getElementById('af').files[0];
+  if(!f){ alert('Please select a .wav file first.'); return; }
+  const fd = new FormData();
+  fd.append('file', f);
+  send(fd);
+}
+
+// ── Mic recording ──
+function startRec(){
+  navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
+    recorder = new MediaRecorder(stream);
+    chunks = []; secs = 0;
+    recorder.start();
+    recorder.ondataavailable = e => chunks.push(e.data);
+
+    document.getElementById('startBtn').disabled = true;
+    document.getElementById('stopBtn').disabled  = false;
+    document.getElementById('startBtn').classList.add('rec-on');
+    document.getElementById('recStatus').innerHTML = '<span class="rdot"></span>Recording... speak naturally';
+
+    tickInt = setInterval(() => {
+      secs++;
+      const m = String(Math.floor(secs/60)).padStart(2,'0');
+      const s = String(secs%60).padStart(2,'0');
+      document.getElementById('timer').textContent = m + ':' + s;
+      const pct = Math.min(100, (secs / MAX_SEC) * 100);
+      document.getElementById('recBar').style.width = pct + '%';
+      document.getElementById('recPct').textContent = secs + ' / ' + MAX_SEC + 's';
+      if(secs >= MAX_SEC) stopRec();
+    }, 1000);
+  }).catch(() => alert('Microphone access denied — please allow mic access in browser.'));
+}
+
+function stopRec(){
+  clearInterval(tickInt);
+  if(!recorder || recorder.state === 'inactive') return;
+  recorder.stop();
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, {type:'audio/wav'});
+    const fd   = new FormData();
+    fd.append('file', blob, 'mic_recording.wav');
+    send(fd);
+  };
+  document.getElementById('startBtn').disabled = false;
+  document.getElementById('stopBtn').disabled  = true;
+  document.getElementById('startBtn').classList.remove('rec-on');
+  document.getElementById('recStatus').textContent = 'Processing...';
+}
+
+// ── Send to API ──
+function send(fd){
+  document.getElementById('resultSection').style.display = 'block';
+  document.getElementById('ldState').style.display       = 'flex';
+  document.getElementById('resContent').style.display    = 'none';
+  document.getElementById('recBar').style.width = '0%';
+  document.getElementById('recStatus').textContent = 'Analyzing...';
+
+  fetch('/audio/predict', {method:'POST', body:fd})
+    .then(r => r.json())
+    .then(d => {
+      if(d.error){ alert('Error: ' + d.error); return; }
+
+      document.getElementById('ldState').style.display    = 'none';
+      document.getElementById('resContent').style.display = 'block';
+
+      document.getElementById('rEmoji').textContent = d.emoji;
+      document.getElementById('rEmo').textContent   = d.emotion;
+      document.getElementById('rConf').textContent  = d.confidence.toFixed(1);
+      document.getElementById('recStatus').textContent = '✅ Done — emotion detected!';
+
+      // Confidence ring (circumference = 2πr = 2π×46 ≈ 289)
+      const circ = 289;
+      document.getElementById('ringPct').textContent = d.confidence.toFixed(0) + '%';
+      document.getElementById('ringFill').style.strokeDashoffset =
+        circ - ((d.confidence / 100) * circ);
+
+      // Suggestions
+      const tc = document.getElementById('tips');
+      tc.innerHTML = '';
+      (d.suggestions || []).forEach((s, i) => {
+        tc.innerHTML += `<div class="tip"><div class="tip-n">${i+1}</div><div class="tip-t">${s}</div></div>`;
+      });
+    })
+    .catch(e => { alert('Request failed: ' + e); });
+}
+</script>
+
+{% endblock %}

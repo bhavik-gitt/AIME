@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="ph">
+  <h1>AIME Dashboard</h1>
+  <p style="color:var(--acc);font-style:italic;font-size:14px;">"AI that understands the real you"</p>
+</div>
+
+<!-- Stats row -->
+<div class="g4" style="margin-bottom:18px;">
+  <div class="st">
+    <div class="st-ic">🎵</div>
+    <div class="st-lb">Audio Model</div>
+    <div class="st-vl" style="font-size:16px;">CNN+BiLSTM</div>
+    <div class="st-sb">MFCC · CREMA-D · 6 emotions</div>
+  </div>
+  <div class="st">
+    <div class="st-ic">📹</div>
+    <div class="st-lb">Video Model</div>
+    <div class="st-vl" style="font-size:16px;">MobileNetV2</div>
+    <div class="st-sb">Live stream · RAVDESS · 8 emotions</div>
+  </div>
+  <div class="st">
+    <div class="st-ic">🗂</div>
+    <div class="st-lb">Training Samples</div>
+    <div class="st-vl">9000+</div>
+    <div class="st-sb">CREMA-D + RAVDESS combined</div>
+  </div>
+  <div class="st">
+    <div class="st-ic">💡</div>
+    <div class="st-lb">Suggestions</div>
+    <div class="st-vl">1000+</div>
+    <div class="st-sb">Personalised per emotion</div>
+  </div>
+</div>
+
+<!-- Pipeline + quick actions -->
+<div class="g2" style="margin-bottom:18px;">
+  <div class="card">
+    <div class="cl">System Pipeline</div>
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:5px;padding:4px 0;">
+      {% for s in [('📥','Input'),('⚙️','Extract'),('🧠','Infer'),('🏷','Label'),('💡','Suggest')] %}
+      <div style="background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--rsm);padding:7px 12px;font-size:12px;color:var(--txt2);">{{s[0]}} {{s[1]}}</div>
+      {% if not loop.last %}<div style="color:var(--acc);font-size:14px;">→</div>{% endif %}
+      {% endfor %}
+    </div>
+    <p style="font-size:12px;color:var(--txt3);margin-top:10px;font-family:var(--M);">
+      Input → MFCC / Frame extraction → CNN+BiLSTM / MobileNetV2 → Emotion → Personalised suggestion
+    </p>
+  </div>
+  <div class="card">
+    <div class="cl">Quick Actions</div>
+    <div class="bgrp">
+      <a href="/audio" class="btn btn-s">🎧 Analyse Audio</a>
+      <a href="/video" class="btn" style="border-color:var(--bdr2);">📹 Live Video</a>
+      <a href="/analytics" class="btn" style="color:var(--purple);border-color:rgba(192,132,252,.25);background:rgba(192,132,252,.06);">📊 View Analytics</a>
+    </div>
+  </div>
+</div>
+
+<!-- Emotion grids -->
+<div class="g2" style="margin-bottom:18px;">
+  <div class="card">
+    <div class="cl">Audio Emotions — CREMA-D (6 classes)</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:4px;">
+      {% for nm,em in [('Angry','😠'),('Disgust','🤢'),('Fear','😨'),('Happy','😊'),('Neutral','😐'),('Sad','😢')] %}
+      <div style="text-align:center;padding:8px 10px;background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--rsm);">
+        <div style="font-size:28px;">{{em}}</div>
+        <div style="font-size:10px;color:var(--txt3);font-family:var(--M);margin-top:3px;">{{nm}}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="card">
+    <div class="cl">Video Emotions — RAVDESS (8 classes)</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:4px;">
+      {% for nm,em in [('Neutral','😐'),('Calm','😌'),('Happy','😊'),('Sad','😢'),('Angry','😠'),('Fear','😨'),('Disgust','🤢'),('Surprise','😲')] %}
+      <div style="text-align:center;padding:8px 10px;background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--rsm);">
+        <div style="font-size:28px;">{{em}}</div>
+        <div style="font-size:10px;color:var(--txt3);font-family:var(--M);margin-top:3px;">{{nm}}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Future work -->
+<div class="card">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+    <div class="cl" style="margin-bottom:0;">Upcoming Features</div>
+    <span class="future">🚀 Future Work</span>
+  </div>
+  <div class="g3">
+    {% set fw = [
+      ('⭐','Tele-MANAS Integration','One-tap call to 14416, chat option, call history & transcripts'),
+      ('🤖','AI Chat Companion','Empathetic chatbot using OpenAI API — coping strategies, distress detection, 24/7'),
+      ('📅','Appointment Booking','Find therapists nearby, book video call appointments'),
+      ('🗺','Therapist Finder','Google Maps API integration — search by location, show on map'),
+      ('📈','Multimodal Fusion','Combine audio + video predictions for higher accuracy'),
+      ('📱','Mobile App','Android/iOS app with push notifications and daily mood tracking'),
+    ] %}
+    {% for ic,t,d in fw %}
+    <div style="background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--rsm);padding:14px;">
+      <div style="font-size:20px;margin-bottom:6px;">{{ic}}</div>
+      <div style="font-size:13px;font-weight:600;color:var(--txt);margin-bottom:3px;">{{t}}</div>
+      <div style="font-size:12px;color:var(--txt2);">{{d}}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
