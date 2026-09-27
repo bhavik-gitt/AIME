@@ -210,6 +210,4 @@ The models are evaluated using:
 
 **Bhavik Ratnottar**
 
-B.Tech Information Technology
-
 AI • Machine Learning • Deep Learning
