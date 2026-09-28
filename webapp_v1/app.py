@@ -8,12 +8,12 @@ app = Flask(__name__)
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# ── DASHBOARD ──────────────────────────────────────────────
+# ── DASHBOARD ────────────
 @app.route("/")
 def dashboard():
     return render_template("dashboard.html")
 
-# ── AUDIO ──────────────────────────────────────────────────
+# ── AUDIO ─────────────
 @app.route("/audio")
 def audio():
     return render_template("audio.html")
@@ -37,7 +37,7 @@ def audio_predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ── VIDEO ──────────────────────────────────────────────────
+# ── VIDEO ───────────
 @app.route("/video")
 def video():
     return render_template("video.html")
@@ -83,7 +83,7 @@ def video_predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ── ANALYTICS / ABOUT ──────────────────────────────────────
+# ── ANALYTICS / ABOUT ──────────
 @app.route("/analytics")
 def analytics():
     return render_template("analytics.html")
@@ -92,7 +92,7 @@ def analytics():
 def about():
     return render_template("about.html")
 
-# ── HELPER ─────────────────────────────────────────────────
+# ── HELPER ────────
 def _emoji(emotion, mode="audio"):
     m = {
         "audio": {"angry":"😠","disgust":"🤢","fear":"😨","happy":"😊","neutral":"😐","sad":"😢"},
