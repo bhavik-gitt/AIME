@@ -150,4 +150,4 @@ model.save("../models/audio_emotion_model.h5")
 np.save("../models/audio_classes.npy", le.classes_)
 
 print("\n💾 Model saved at: ../models/audio_emotion_model.h5")
-print("✅ AUDIO TRAINING COMPLETED SUCCESSFULLY 🎉")
+print("✅ AUDIO TRAINING COMPLETED SUCCESSFULLY ")
