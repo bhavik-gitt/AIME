@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ph"><h1>Insights & suggestions</h1><p>Personal insights generated from your saved analytics.</p></div>
+<div class="card"><pre id="insightsData" style="white-space:pre-wrap;">Loading...</pre></div>
+<script>
+(async function(){
+  try{const data=await fetch('/api/v1/analytics/summary').then(r=>r.json());
+  const s=data.summary||{};
+  const top=(s.emotionDistribution||[]).sort((a,b)=>b.count-a.count)[0];
+  const text=[
+    `Total analyses: ${s.totalAnalyses||0}`,
+    top?`Most frequent emotion: ${top.emotion} (${top.count})`:'No emotion trend yet.',
+    'Predictions are estimates and not clinical diagnosis.'
+  ].join('\n');
+  document.getElementById('insightsData').textContent=text;}
+  catch(e){document.getElementById('insightsData').textContent=String(e);}
+})();
+</script>
+{% endblock %}

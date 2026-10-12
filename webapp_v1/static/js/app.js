@@ -1,6 +1,6 @@
 (function(){
   const API = '/api/v1';
-  const protectedRoutes = ['/dashboard','/audio','/video','/history','/analytics','/reports','/profile','/settings'];
+  const protectedRoutes = ['/dashboard','/audio','/video','/history','/results','/analytics','/insights','/reports','/profile','/settings','/help'];
   let historyPage = 1;
   let historyPages = 1;
 

@@ -89,6 +89,16 @@ def reports_page():
     return render_template("reports.html")
 
 
+@bp.get("/results")
+def results_page():
+    return render_template("results.html")
+
+
+@bp.get("/insights")
+def insights_page():
+    return render_template("insights.html")
+
+
 @bp.get("/help")
 def help_page():
     return render_template("help.html")

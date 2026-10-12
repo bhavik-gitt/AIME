@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ph"><h1>Latest analysis result</h1><p>Review your most recent saved emotion analysis.</p></div>
+<div class="card"><pre id="latestResult" style="white-space:pre-wrap;">Loading...</pre></div>
+<script>
+(async function(){
+  try{const data=await fetch('/api/v1/history?page=1&perPage=1').then(r=>r.json());
+  document.getElementById('latestResult').textContent = data.items?.length ? JSON.stringify(data.items[0],null,2) : 'No saved analysis yet.';}
+  catch(e){document.getElementById('latestResult').textContent=String(e);}
+})();
+</script>
+{% endblock %}

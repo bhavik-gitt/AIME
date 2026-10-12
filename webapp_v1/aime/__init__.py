@@ -4,6 +4,7 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
+from flask_cors import CORS
 
 from .config import Config
 from .extensions import db, migrate
@@ -23,6 +24,7 @@ def create_app(test_config: dict | None = None) -> Flask:
 
     db.init_app(app)
     migrate.init_app(app, db)
+    CORS(app, resources={r"/api/*": {"origins": app.config["CORS_ORIGINS"]}}, supports_credentials=True)
 
     from .api.auth import bp as auth_bp
     from .api.analysis import bp as analysis_bp
