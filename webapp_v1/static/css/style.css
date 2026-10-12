@@ -105,6 +105,12 @@ body{font-family:var(--F);background:var(--bg);color:var(--txt);min-height:100vh
 .btn-g{background:rgba(74,222,128,.08);color:var(--green);border-color:rgba(74,222,128,.25);}
 .btn-g:hover{background:rgba(74,222,128,.16);}
 .bgrp{display:flex;gap:9px;flex-wrap:wrap;align-items:center;}
+input,select,textarea{
+  background:var(--surf2);border:1px solid var(--bdr2);color:var(--txt);
+  border-radius:var(--rsm);padding:9px 10px;font:inherit;
+}
+label{display:flex;flex-direction:column;gap:6px;color:var(--txt2);font-size:13px;}
+a{color:var(--acc);}
 /* ══ DROP ZONE ══════════════════════════════════════════════ */
 .dz{
   border:2px dashed var(--bdr2);border-radius:var(--r);padding:32px 20px;

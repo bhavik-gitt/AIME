@@ -85,6 +85,7 @@
             </div>
           </div>
           <div class="tip-wrap" id="vTips"></div>
+          <button class="btn" style="margin-top:12px;" onclick="saveVideoAnalysis()">Save Analysis</button>
         </div>
       </div>
     </div>
@@ -108,6 +109,7 @@
 <script>
 let pollInt=null, camSecs=0, camTick=null;
 const CAM_DUR=12;
+let lastVideoResult=null;
 
 const emojis={neutral:"😐",calm:"😌",happy:"😊",sad:"😢",angry:"😠",fear:"😨",disgust:"🤢",surprise:"😲"};
 
@@ -161,7 +163,7 @@ function fetchLive(){
       document.getElementById('ovConf').textContent=d.confidence.toFixed(0)+'%';
       const tc=document.getElementById('liveTips');
       tc.innerHTML='';
-      (d.suggestions||[]).slice(0,3).forEach((s,i)=>{
+      window.AIME.suggestions(d.emotion).slice(0,3).forEach((s,i)=>{
         tc.innerHTML+=`<div class="tip"><div class="tip-n">${i+1}</div><div class="tip-t">${s}</div></div>`;
       });
     }).catch(()=>{});
@@ -188,22 +190,35 @@ function analyzeVideo(){
   document.getElementById('vLd').style.display='flex';
   document.getElementById('vResContent').style.display='none';
 
-  fetch('/video/predict',{method:'POST',body:fd})
+  fetch('/api/v1/analysis/video/predict',{method:'POST',body:fd})
     .then(r=>r.json())
     .then(d=>{
       if(d.error){alert('Error: '+d.error);return;}
+      if(!d.success){alert('Failed to analyze video');return;}
+      const result=d.result;
+      lastVideoResult=result;
       document.getElementById('vLd').style.display='none';
       document.getElementById('vResContent').style.display='block';
-      document.getElementById('vEmoji').textContent=d.emoji;
-      document.getElementById('vEmo').textContent=d.emotion;
-      document.getElementById('vConf').textContent=d.confidence.toFixed(1);
+      document.getElementById('vEmoji').textContent=window.AIME.emojiFor(result.modality,result.emotion);
+      document.getElementById('vEmo').textContent=result.emotion;
+      document.getElementById('vConf').textContent=result.confidence.toFixed(1);
       const tc=document.getElementById('vTips');
       tc.innerHTML='';
-      (d.suggestions||[]).forEach((s,i)=>{
+      window.AIME.suggestions(result.emotion).forEach((s,i)=>{
         tc.innerHTML+=`<div class="tip"><div class="tip-n">${i+1}</div><div class="tip-t">${s}</div></div>`;
       });
     })
     .catch(e=>alert('Failed: '+e));
+}
+
+function saveVideoAnalysis(){
+  if(!lastVideoResult){ alert('Analyze video first.'); return; }
+  window.AIME.saveAnalysis({
+    modality: 'video',
+    predictedEmotion: lastVideoResult.emotion,
+    confidenceScore: lastVideoResult.confidence,
+    classProbabilities: lastVideoResult.classProbabilities
+  });
 }
 </script>
 

@@ -1,19 +1,21 @@
 import numpy as np
 import librosa
 from tensorflow.keras.models import load_model
+from pathlib import Path
 
 # ── CONFIG — matches your actual training script exactly ──
-MODEL_PATH  = "../models/audio_emotion_model.h5"
+ROOT_DIR = Path(__file__).resolve().parents[2]
+MODEL_PATH  = ROOT_DIR / "models" / "audio_emotion_model.h5"
 SAMPLE_RATE = 16000
 DURATION    = 3
 N_MELS      = 64
 MAX_LEN     = 128
 
-model = load_model(MODEL_PATH)
+model = load_model(str(MODEL_PATH))
 
 # Load classes from saved npy if available, else use default order
 try:
-    _classes = np.load("../models/audio_classes.npy", allow_pickle=True)
+    _classes = np.load(str(ROOT_DIR / "models" / "audio_classes.npy"), allow_pickle=True)
     emotions = list(_classes)
 except Exception:
     emotions = ["angry", "disgust", "fear", "happy", "neutral", "sad"]
@@ -57,3 +59,13 @@ def predict_audio_emotion(file_path):
     pred = model.predict(features, verbose=0)[0]
     idx  = int(np.argmax(pred))
     return emotions[idx], float(pred[idx]) * 100
+
+
+def predict_audio_with_probs(file_path):
+    features = extract_features(file_path)
+    features = features[..., np.newaxis]
+    features = np.expand_dims(features, axis=0)
+    pred = model.predict(features, verbose=0)[0]
+    idx = int(np.argmax(pred))
+    probs = {emotions[i]: float(pred[i]) for i in range(len(emotions))}
+    return emotions[idx], float(pred[idx]) * 100, probs

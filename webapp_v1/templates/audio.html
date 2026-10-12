@@ -99,6 +99,7 @@
         <div>
           <div class="cl">Personalised Suggestions</div>
           <div class="tip-wrap" id="tips"></div>
+          <button class="btn" style="margin-top:12px;" onclick="saveAnalysis()">Save Analysis</button>
         </div>
       </div>
     </div>
@@ -108,6 +109,7 @@
 <script>
 let recorder, chunks=[], tickInt, secs=0;
 const MAX_SEC = 15;
+let lastResult = null;
 
 // ── Drag & drop ──
 const dz = document.getElementById('dz');
@@ -186,33 +188,47 @@ function send(fd){
   document.getElementById('recBar').style.width = '0%';
   document.getElementById('recStatus').textContent = 'Analyzing...';
 
-  fetch('/audio/predict', {method:'POST', body:fd})
+  fetch('/api/v1/analysis/audio/predict', {method:'POST', body:fd})
     .then(r => r.json())
     .then(d => {
       if(d.error){ alert('Error: ' + d.error); return; }
+      if(!d.success){ alert('Failed to analyze audio'); return; }
+      const result = d.result;
+      lastResult = result;
 
       document.getElementById('ldState').style.display    = 'none';
       document.getElementById('resContent').style.display = 'block';
 
-      document.getElementById('rEmoji').textContent = d.emoji;
-      document.getElementById('rEmo').textContent   = d.emotion;
-      document.getElementById('rConf').textContent  = d.confidence.toFixed(1);
+      const emoji = window.AIME.emojiFor(result.modality, result.emotion);
+      document.getElementById('rEmoji').textContent = emoji;
+      document.getElementById('rEmo').textContent   = result.emotion;
+      document.getElementById('rConf').textContent  = result.confidence.toFixed(1);
       document.getElementById('recStatus').textContent = '✅ Done — emotion detected!';
 
       // Confidence ring (circumference = 2πr = 2π×46 ≈ 289)
       const circ = 289;
-      document.getElementById('ringPct').textContent = d.confidence.toFixed(0) + '%';
+      document.getElementById('ringPct').textContent = result.confidence.toFixed(0) + '%';
       document.getElementById('ringFill').style.strokeDashoffset =
-        circ - ((d.confidence / 100) * circ);
+        circ - ((result.confidence / 100) * circ);
 
       // Suggestions
       const tc = document.getElementById('tips');
       tc.innerHTML = '';
-      (d.suggestions || []).forEach((s, i) => {
+      window.AIME.suggestions(result.emotion).forEach((s, i) => {
         tc.innerHTML += `<div class="tip"><div class="tip-n">${i+1}</div><div class="tip-t">${s}</div></div>`;
       });
     })
     .catch(e => { alert('Request failed: ' + e); });
+}
+
+function saveAnalysis(){
+  if(!lastResult){ alert('Analyze audio first.'); return; }
+  window.AIME.saveAnalysis({
+    modality: 'audio',
+    predictedEmotion: lastResult.emotion,
+    confidenceScore: lastResult.confidence,
+    classProbabilities: lastResult.classProbabilities
+  });
 }
 </script>
 

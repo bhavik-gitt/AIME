@@ -54,4 +54,12 @@
   </div>
 </div>
 
+<div class="card" style="margin-top:18px;">
+  <div class="cl">Personal analytics summary</div>
+  <pre id="analyticsSummary" style="white-space:pre-wrap;"></pre>
+  <button class="btn btn-s" onclick="window.AIME.loadAnalytics()">Refresh</button>
+</div>
+
+<script>window.AIME.loadAnalytics();</script>
+
 {% endblock %}

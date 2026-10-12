@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ph">
+  <h1>AIME — AI for Mood & Emotions</h1>
+  <p>Analyze voice and facial signals, track emotional trends, and keep private history under your account.</p>
+</div>
+
+<div class="g2" style="margin-bottom:16px;">
+  <div class="card">
+    <div class="cl">Start</div>
+    <h2 style="margin-bottom:10px;">Emotion intelligence with real AI models</h2>
+    <p style="color:var(--txt2);margin-bottom:16px;">AIME runs trained audio and video emotion models, supports secure sign in, and saves your analysis history for personal insights.</p>
+    <div class="bgrp">
+      <a class="btn btn-s" href="/register">Start Analysis</a>
+      <a class="btn" href="/about">Explore Features</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="cl">Privacy</div>
+    <p style="color:var(--txt2);">Predictions are estimates only and not a diagnosis. Your records are isolated per account. Export and delete controls are available in the app.</p>
+    <div style="margin-top:12px;" class="bgrp">
+      <a class="btn" href="/privacy">Privacy Policy</a>
+      <a class="btn" href="/terms">Terms</a>
+    </div>
+  </div>
+</div>
+
+<div class="g3">
+  <div class="card"><div class="cl">Audio</div><p>Upload or record audio, run feature extraction + model inference, and view confidence and class probabilities.</p></div>
+  <div class="card"><div class="cl">Video</div><p>Use live webcam stream or upload video for real model-backed facial emotion detection.</p></div>
+  <div class="card"><div class="cl">Analytics</div><p>Track distribution by emotion, trends over time, and modality breakdown from saved records.</p></div>
+</div>
+{% endblock %}

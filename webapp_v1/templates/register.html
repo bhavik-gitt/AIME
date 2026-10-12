@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ph"><h1>Create account</h1><p>Register to save and analyze your emotion history securely.</p></div>
+<div class="card" style="max-width:520px;">
+  <div class="cl">Registration</div>
+  <form id="registerForm" class="auth-form" style="display:flex;flex-direction:column;gap:10px;">
+    <input name="fullName" type="text" placeholder="Full name" required>
+    <input name="email" type="email" placeholder="Email" required>
+    <input name="password" type="password" placeholder="Password" required>
+    <button class="btn btn-s" type="submit">Register</button>
+  </form>
+</div>
+{% endblock %}

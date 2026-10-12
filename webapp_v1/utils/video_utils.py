@@ -1,11 +1,13 @@
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
+from pathlib import Path
 
-MODEL_PATH = "../models/video_emotion_model.h5"
+ROOT_DIR = Path(__file__).resolve().parents[2]
+MODEL_PATH = ROOT_DIR / "models" / "video_emotion_model.h5"
 IMG_SIZE   = 160
 
-model    = load_model(MODEL_PATH)
+model    = load_model(str(MODEL_PATH))
 emotions = ["neutral", "calm", "happy", "sad", "angry", "fear", "disgust", "surprise"]
 
 face_cascade = cv2.CascadeClassifier(
@@ -129,3 +131,39 @@ def analyze_video_file(path):
     avg = np.mean(all_preds, axis=0)
     idx = int(np.argmax(avg))
     return emotions[idx], float(avg[idx]) * 100
+
+
+def analyze_video_file_with_probs(path):
+    cap   = cv2.VideoCapture(path)
+    fps   = cap.get(cv2.CAP_PROP_FPS) or 25.0
+    step  = max(1, int(fps * 0.5))
+    all_preds = []
+    frame_n   = 0
+
+    while True:
+        ok, frame = cap.read()
+        if not ok:
+            break
+        if frame_n % step == 0:
+            gray  = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(
+                gray, scaleFactor=1.1, minNeighbors=4, minSize=(50, 50)
+            )
+            if len(faces) > 0:
+                x, y, w, h = faces[0]
+                crop = frame[y:y+h, x:x+w]
+                if crop.size > 0:
+                    face = cv2.resize(crop, (IMG_SIZE, IMG_SIZE)).astype("float32") / 255.0
+                    face = np.expand_dims(face, axis=0)
+                    pred = model.predict(face, verbose=0)[0]
+                    all_preds.append(pred)
+        frame_n += 1
+
+    cap.release()
+    if not all_preds:
+        return "neutral", 0.0, {}
+
+    avg = np.mean(all_preds, axis=0)
+    idx = int(np.argmax(avg))
+    probs = {emotions[i]: float(avg[i]) for i in range(len(emotions))}
+    return emotions[idx], float(avg[idx]) * 100, probs

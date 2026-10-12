@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AIME – AI that understands the real you</title>
+  <title>AIME — AI for Mood & Emotions</title>
   <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-
 <nav class="sb">
   <div class="sb-brand">
     <div class="sb-logo">🧠</div>
@@ -17,23 +16,34 @@
     </div>
   </div>
 
-  <span class="nb">Main</span>
-  <a href="/"          class="{% if request.path=='/' %}on{% endif %}"><span class="ni">⊞</span><span>Dashboard</span></a>
-  <a href="/video"     class="{% if request.path=='/video' %}on{% endif %}"><span class="ni">📹</span><span>Video Detection</span></a>
-  <a href="/audio"     class="{% if request.path=='/audio' %}on{% endif %}"><span class="ni">🎧</span><span>Audio Detection</span></a>
-  <a href="/analytics" class="{% if request.path=='/analytics' %}on{% endif %}"><span class="ni">📊</span><span>Analytics</span></a>
-  <a href="/about"     class="{% if request.path=='/about' %}on{% endif %}"><span class="ni">ℹ</span><span>About AIME</span></a>
+  <span class="nb">Public</span>
+  <a href="/" class="{% if request.path=='/' %}on{% endif %}"><span class="ni">🏠</span><span>Home</span></a>
+  <a href="/about" class="{% if request.path=='/about' %}on{% endif %}"><span class="ni">ℹ</span><span>About</span></a>
+  <a href="/contact" class="{% if request.path=='/contact' %}on{% endif %}"><span class="ni">✉</span><span>Contact</span></a>
 
-  <!-- <div class="sb-foot">
-    CREMA-D · RAVDESS<br>
-    CNN+BiLSTM · MobileNetV2<br>
-    B.Tech IT · Sem 6
-  </div> -->
+  <div id="authOnlyNav" style="display:none;">
+    <span class="nb">App</span>
+    <a href="/dashboard" class="{% if request.path=='/dashboard' %}on{% endif %}"><span class="ni">⊞</span><span>Dashboard</span></a>
+    <a href="/audio" class="{% if request.path=='/audio' %}on{% endif %}"><span class="ni">🎧</span><span>Audio</span></a>
+    <a href="/video" class="{% if request.path=='/video' %}on{% endif %}"><span class="ni">📹</span><span>Video</span></a>
+    <a href="/history" class="{% if request.path=='/history' %}on{% endif %}"><span class="ni">🕘</span><span>History</span></a>
+    <a href="/analytics" class="{% if request.path=='/analytics' %}on{% endif %}"><span class="ni">📊</span><span>Analytics</span></a>
+    <a href="/reports" class="{% if request.path=='/reports' %}on{% endif %}"><span class="ni">📄</span><span>Reports</span></a>
+    <a href="/profile" class="{% if request.path=='/profile' %}on{% endif %}"><span class="ni">👤</span><span>Profile</span></a>
+    <a href="/settings" class="{% if request.path=='/settings' %}on{% endif %}"><span class="ni">⚙</span><span>Settings</span></a>
+  </div>
+
+  <div class="sb-foot" id="authSummary">Not signed in</div>
+  <div class="bgrp" style="padding:10px;">
+    <a href="/login" class="btn" id="loginLink">Login</a>
+    <a href="/register" class="btn btn-s" id="registerLink">Register</a>
+    <button class="btn btn-r" id="logoutBtn" style="display:none;" onclick="window.AIME.logout()">Logout</button>
+  </div>
 </nav>
 
 <main class="main">
   {% block content %}{% endblock %}
 </main>
-
+<script src="/static/js/app.js"></script>
 </body>
 </html>

@@ -1,213 +1,72 @@
-# 🧠 AIME – AI Mental Emotion Recognition System
+# AIME — AI for Mood & Emotions
 
-> A real-time AI-powered platform for detecting human emotions using voice and facial expressions.
+AIME is a Flask-based multimodal emotion analysis app with:
+- Real audio model inference (`models/audio_emotion_model.h5`)
+- Real video model inference (`models/video_emotion_model.h5`)
+- Authentication + account sessions
+- Persistent database-backed analysis history
+- Analytics and exports
 
+## Tech stack
+- Python, Flask, SQLAlchemy, Flask-Migrate
+- TensorFlow/Keras, Librosa, OpenCV
+- Jinja templates + JS frontend
 
-## 🚀 Overview
-
-AIME (AI Mental Emotion Recognition System) is a deep learning project that recognizes emotions from both audio and video inputs.
-
-The system uses trained AI models to analyze speech and facial expressions, predict emotions in real time, and provide meaningful insights through an interactive web dashboard.
-
-### Supported Emotions
-
-**Audio**
-
-* Angry
-* Disgust
-* Fear
-* Happy
-* Neutral
-* Sad
-
-**Video**
-
-* Neutral
-* Calm
-* Happy
-* Sad
-* Angry
-* Fear
-* Disgust
-* Surprise
-
----
-
-## ✨ Features
-
-* 🎤 Audio Emotion Recognition
-* 🎥 Real-Time Video Emotion Recognition
-* 📊 Analytics Dashboard
-* 📈 Confusion Matrix & Performance Analysis
-* 🎯 Confidence Score Prediction
-* 💡 Emotion-Based Recommendations
-* 🌐 Flask Web Application
-* 📱 Responsive Dashboard UI
-
----
-
-## 🏗️ Architecture
-
-Input (Audio / Video)
-
-↓
-
-Feature Extraction
-
-↓
-
-Deep Learning Models
-
-↓
-
-Emotion Prediction
-
-↓
-
-Confidence Score
-
-↓
-
-Insights & Recommendations
-
----
-
-## 🧠 Models Used
-
-### Audio Emotion Recognition
-
-* CNN-Based Deep Learning Model
-* MFCC & Log-Mel Features
-* Dataset: CREMA-D
-
-### Video Emotion Recognition
-
-* MobileNetV2
-* Transfer Learning
-* Dataset: RAVDESS
-
----
-
-## 🛠️ Tech Stack
-
-**Languages**
-
-* Python
-
-**AI / Deep Learning**
-
-* TensorFlow
-* Keras
-
-**Computer Vision**
-
-* OpenCV
-* MTCNN
-
-**Audio Processing**
-
-* Librosa
-* SoundFile
-
-**Backend**
-
-* Flask
-
-**Frontend**
-
-* HTML
-* CSS
-* JavaScript
-
-**Visualization**
-
-* Matplotlib
-* Seaborn
-
----
-
-## 📂 Project Structure
-
+## Local setup (Linux/macOS)
 ```bash
-PROJECT/
-│
-├── models/
-├── dataset/
-├── assets/
-├── src/
-├── webapp/
-└── requirements.txt
-```
-
----
-
-## ⚙️ Installation
-
-```bash
-git clone <repository-url>
-
-cd PROJECT
-
-python -m venv venv
-
-venv\Scripts\activate
-
+git clone <repo-url>
+cd AIME
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env
+flask --app webapp_v1/app.py db upgrade
+python webapp_v1/app.py
 ```
 
----
-
-## ▶️ Run
-
-### Audio
-
-```bash
-python src/live_audio_emotion.py
+## Local setup (Windows PowerShell)
+```powershell
+git clone <repo-url>
+cd AIME
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+Copy-Item .env.example .env
+flask --app webapp_v1/app.py db upgrade
+python webapp_v1/app.py
 ```
 
-### Video
+App URL: `http://localhost:5000`
 
-```bash
-python src/live_video_emotion.py
-```
+## Environment variables
+See `.env.example` for all required configuration.
 
-### Web Application
+## Database
+- Default local database: SQLite (`webapp_v1/aime.db`)
+- Production recommendation: PostgreSQL (`DATABASE_URL=postgresql+psycopg://...`)
+- Run migrations with Flask-Migrate (`flask --app webapp_v1/app.py db ...`)
 
-```bash
-cd webapp
+## Core API prefix
+`/api/v1`
 
-python app.py
-```
+Key groups:
+- `/auth/*` register/login/logout/me/password/session/account
+- `/analysis/*` audio/video prediction, save/get/delete, notes
+- `/history` list/filter/paginate + `/history/export`
+- `/analytics/summary`, `/dashboard/summary`
+- `/users/profile`, `/users/preferences`, `/users/export`
 
----
+## Security notes
+- Password hashing: Argon2
+- Server-side session records with revocation + expiry
+- Auth endpoint rate limiting
+- Ownership checks on analysis resources
+- Upload size limits
 
-## 📊 Evaluation
+## Important disclaimer
+AIME predictions are probabilistic estimates and **not** medical diagnosis.
 
-The models are evaluated using:
-
-* Accuracy
-* Precision
-* Recall
-* F1 Score
-* Confusion Matrix
-* ROC Curve
-* Class Distribution Analysis
-
----
-
-## 🔮 Future Enhancements
-
-* AI Mental Health Companion
-* Tele-MANAS Integration
-* Therapist Finder
-* Emotion History Tracking
-* Appointment Booking System
-* Mobile Application
-
----
-
-## 👨‍💻 Author
-
-**Bhavik Ratnottar**
-
-AI • Machine Learning • Deep Learning
+## Deployment notes
+- Frontend+backend can run together on Flask hosting.
+- For scale, host backend on a Python platform and database on managed PostgreSQL.
+- Configure production HTTPS, secure cookies, and production `SECRET_KEY`/`DATABASE_URL`.

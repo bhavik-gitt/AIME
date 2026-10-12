@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ph"><h1>History</h1><p>Search, filter, paginate, and export your saved analyses.</p></div>
+<div class="card" style="margin-bottom:12px;">
+  <div class="bgrp">
+    <input id="historySearch" placeholder="Search emotion">
+    <select id="historyModality"><option value="">All modalities</option><option value="audio">Audio</option><option value="video">Video</option></select>
+    <button class="btn" onclick="window.AIME.loadHistory(1)">Apply</button>
+    <button class="btn" onclick="window.AIME.exportHistory('csv')">Export CSV</button>
+    <button class="btn" onclick="window.AIME.exportHistory('json')">Export JSON</button>
+  </div>
+</div>
+<div class="card">
+  <div id="historyList"></div>
+  <div class="bgrp" style="margin-top:12px;">
+    <button class="btn" id="prevHistory" onclick="window.AIME.prevHistory()">Prev</button>
+    <button class="btn" id="nextHistory" onclick="window.AIME.nextHistory()">Next</button>
+  </div>
+</div>
+{% endblock %}

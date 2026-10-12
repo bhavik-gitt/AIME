@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ph"><h1>Settings</h1><p>Update theme, notification, privacy, and retention preferences.</p></div>
+<div class="card" style="max-width:720px;">
+  <form id="settingsForm" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <label>Theme<select name="theme"><option value="dark">Dark</option><option value="light">Light</option></select></label>
+    <label>Privacy<select name="privacyLevel"><option value="standard">Standard</option><option value="strict">Strict</option></select></label>
+    <label>Retention days<input name="retentionDays" type="number" min="1" max="3650" required></label>
+    <label style="display:flex;align-items:center;gap:6px;"><input name="notificationsEnabled" type="checkbox">Notifications enabled</label>
+    <label style="display:flex;align-items:center;gap:6px;"><input name="autoSaveAnalysis" type="checkbox">Auto-save analysis</label>
+    <div><button class="btn btn-s" type="submit">Save settings</button></div>
+  </form>
+</div>
+{% endblock %}

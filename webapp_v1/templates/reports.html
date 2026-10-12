@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ph"><h1>Reports and exports</h1><p>Generate reports from your own history records.</p></div>
+<div class="card">
+  <div class="bgrp">
+    <button class="btn btn-s" onclick="window.AIME.exportHistory('csv')">Download CSV report</button>
+    <button class="btn" onclick="window.AIME.exportHistory('json')">Download JSON report</button>
+    <button class="btn" onclick="window.AIME.loadAnalytics()">Refresh analytics summary</button>
+  </div>
+  <pre id="reportSummary" style="margin-top:12px;white-space:pre-wrap;"></pre>
+</div>
+{% endblock %}
